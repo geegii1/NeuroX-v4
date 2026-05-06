@@ -130,7 +130,7 @@ for ticker, pos in portfolio.items():
     total_value += value
     cost_basis += cost
 
-    rows.append((ticker, qty, entry, price, pnl))
+    rows.append((ticker, qty, entry, price, pnl, pos.get("timestamp", "")))
 
 total_pnl = total_value - cost_basis
 pct = (total_pnl / cost_basis * 100) if cost_basis else 0
@@ -166,12 +166,13 @@ table_html = """
 </tr>
 """
 
-for ticker, qty, entry, price, pnl in rows:
+for ticker, qty, entry, price, pnl, timestamp in rows:
     color = "green" if pnl >= 0 else "red"
+    ts_display = timestamp[:19] if timestamp else "—"
 
     table_html += f"""
     <tr>
-        <td><b>{ticker}</b></td>
+        <td><b>{ticker}</b><br><span style="color:#6b7280;font-size:11px;font-family:'IBM Plex Mono',monospace">{ts_display}</span></td>
         <td>{qty}</td>
         <td>${entry:.2f}</td>
         <td>${price:.2f}</td>
