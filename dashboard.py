@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import json
 import os
 import time
@@ -187,8 +188,18 @@ for ticker, qty, entry, price, pnl, timestamp in rows:
 
 table_html += "</table>"
 
-# 🚨 THIS LINE FIXES YOUR ISSUE
-st.markdown(table_html, unsafe_allow_html=True)
+styled_table = f"""
+<style>
+  table {{ width: 100%; border-collapse: collapse; }}
+  th {{ text-align: left; color: #9ca3af; font-size: 12px; padding-bottom: 8px; }}
+  td {{ padding: 12px 0; border-bottom: 1px solid #1f2937; color: white; font-size: 14px; }}
+  .green {{ color: #22c55e; font-weight: 600; }}
+  .red {{ color: #ef4444; font-weight: 600; }}
+  body {{ background: transparent; margin: 0; }}
+</style>
+{table_html}
+"""
+components.html(styled_table, height=max(80, len(rows) * 58 + 60), scrolling=False)
 
 # ===== AUTO REFRESH =====
 time.sleep(60)
