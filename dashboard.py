@@ -1,7 +1,7 @@
 import streamlit as st
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
 # ===== CONFIG =====
@@ -292,7 +292,9 @@ def get_price(ticker):
     if not ALPACA_OK:
         return None
     try:
-        req = StockBarsRequest(symbol_or_symbols=[ticker], timeframe=TimeFrame.Minute, limit=1, feed="iex")
+        req = StockBarsRequest(symbol_or_symbols=[ticker], timeframe=TimeFrame.Minute,
+                               start=datetime.utcnow() - timedelta(minutes=15),
+                               end=datetime.utcnow(), feed="iex")
         bars = client.get_stock_bars(req)
         if ticker in bars.data and bars.data[ticker]:
             return float(bars.data[ticker][-1].close)
