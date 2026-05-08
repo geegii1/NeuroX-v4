@@ -94,6 +94,16 @@ class NeuroXController:
             label = "STRONG" if o["score"] > 0.05 else "MODERATE"
             print(f"{i}. {o['ticker']} → {label} ({round(o['score']*100,2)}%)")
 
+        if opportunities:
+            top = opportunities[0]
+            self.save_json("data/latest_signal.json", {
+                "action": "BUY" if top["score"] > 0 else "HOLD",
+                "ticker": top["ticker"],
+                "score": round(top["score"] * 100, 2),
+                "confidence": f"{round(top['score'] * 100, 2)}%",
+                "timestamp": str(datetime.now())
+            })
+
         selected = None
         for o in opportunities:
             if o["ticker"] not in portfolio:
@@ -126,6 +136,7 @@ class NeuroXController:
 
         self.save_json("data/open_orders.json", portfolio)
         self.save_json("data/trade_history.json", trade_history)
+        self.save_json("data/last_run.json", {"timestamp": str(datetime.now())})
 
         print("\nPortfolio:")
         print(f"Positions: {len(portfolio)}")

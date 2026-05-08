@@ -1,6 +1,7 @@
 import streamlit as st
 import json
 import os
+import time
 from dotenv import load_dotenv
 
 # ===== CONFIG =====
@@ -97,9 +98,13 @@ def get_price(ticker):
 # ===== LOAD =====
 signal = load_json("latest_signal.json")
 portfolio = load_json("open_orders.json")
+last_run = load_json("last_run.json")
 
 # ===== HEADER =====
 st.markdown("# 🚀 WizeTrade")
+
+last_run_ts = last_run.get("timestamp", "Never") if last_run else "Never"
+st.caption(f"Last engine run: {last_run_ts}")
 
 # ===== SIGNAL =====
 st.markdown("### Today’s Signal")
@@ -186,10 +191,5 @@ table_html += "</table>"
 st.markdown(table_html, unsafe_allow_html=True)
 
 # ===== AUTO REFRESH =====
-st.markdown("""
-<script>
-setTimeout(function(){
-    window.location.reload();
-}, 60000);
-</script>
-""", unsafe_allow_html=True)
+time.sleep(60)
+st.rerun()
